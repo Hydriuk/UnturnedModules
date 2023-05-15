@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>10fce93f-481c-40ab-9e43-ac01a7749e6c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Hydriuk.UnturnedModules</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\ICommandAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IConfigurationAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IEnvironmentAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IPermissionAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IThreadAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\ITranslationAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\EquipmentExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\InventoryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\PlayerExtensions.cs" />
+  </ItemGroup>
+</Project>

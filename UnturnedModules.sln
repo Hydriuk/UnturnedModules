@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnturnedModules", "UnturnedModules\UnturnedModules.shproj", "{10FCE93F-481C-40AB-9E43-AC01A7749E6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RocketModModules", "RocketModModules\RocketModModules.csproj", "{55D868F3-CE82-4157-9C5C-894AF8A53BDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenModModules", "OpenModModules\OpenModModules.csproj", "{34E34343-4E26-4E71-A562-9D24E7805179}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		OpenMod|Any CPU = OpenMod|Any CPU
+		RocketMod|Any CPU = RocketMod|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55D868F3-CE82-4157-9C5C-894AF8A53BDF}.OpenMod|Any CPU.ActiveCfg = OpenMod|Any CPU
+		{55D868F3-CE82-4157-9C5C-894AF8A53BDF}.OpenMod|Any CPU.Build.0 = OpenMod|Any CPU
+		{55D868F3-CE82-4157-9C5C-894AF8A53BDF}.RocketMod|Any CPU.ActiveCfg = RocketMod|Any CPU
+		{55D868F3-CE82-4157-9C5C-894AF8A53BDF}.RocketMod|Any CPU.Build.0 = RocketMod|Any CPU
+		{34E34343-4E26-4E71-A562-9D24E7805179}.OpenMod|Any CPU.ActiveCfg = OpenMod|Any CPU
+		{34E34343-4E26-4E71-A562-9D24E7805179}.OpenMod|Any CPU.Build.0 = OpenMod|Any CPU
+		{34E34343-4E26-4E71-A562-9D24E7805179}.RocketMod|Any CPU.ActiveCfg = RocketMod|Any CPU
+		{34E34343-4E26-4E71-A562-9D24E7805179}.RocketMod|Any CPU.Build.0 = RocketMod|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DB25E13C-FDA2-4E78-81F0-D2B16035C8D5}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		UnturnedModules\UnturnedModules.projitems*{10fce93f-481c-40ab-9e43-ac01a7749e6c}*SharedItemsImports = 13
+		UnturnedModules\UnturnedModules.projitems*{34e34343-4e26-4e71-a562-9d24e7805179}*SharedItemsImports = 5
+		UnturnedModules\UnturnedModules.projitems*{55d868f3-ce82-4157-9c5c-894af8a53bdf}*SharedItemsImports = 4
+	EndGlobalSection
+EndGlobal
