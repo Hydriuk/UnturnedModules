@@ -7,7 +7,7 @@ using System;
 namespace Hydriuk.OpenModModules.Adapters
 {
     [PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    public class ThreadAdapter : IThreadAdatper
+    public class ThreadAdapter : IThreadAdapter
     {
         public async void RunOnMainThread(Action action)
         {

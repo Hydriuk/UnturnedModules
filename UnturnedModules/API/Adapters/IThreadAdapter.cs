@@ -8,7 +8,7 @@ namespace Hydriuk.UnturnedModules.API.Adapters
 #if OPENMOD
     [Service]
 #endif
-    public interface IThreadAdatper
+    public interface IThreadAdapter
     {
         void RunOnMainThread(Action action);
         void RunOnThreadPool(Action action);

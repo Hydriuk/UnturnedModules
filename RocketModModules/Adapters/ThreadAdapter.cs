@@ -4,7 +4,7 @@ using System;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    public class ThreadAdapter : IThreadAdatper
+    public class ThreadAdapter : IThreadAdapter
     {
         public void RunOnMainThread(Action action)
         {
