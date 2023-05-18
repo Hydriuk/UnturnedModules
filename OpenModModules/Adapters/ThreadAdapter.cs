@@ -1,5 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
-using Hydriuk.UnturnedModules.API.Adapters;
+using Hydriuk.UnturnedModules.Adapters;
 using Microsoft.Extensions.DependencyInjection;
 using OpenMod.API.Ioc;
 using System;

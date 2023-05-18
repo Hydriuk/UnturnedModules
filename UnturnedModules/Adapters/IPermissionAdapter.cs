@@ -5,7 +5,7 @@ using Steamworks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Hydriuk.UnturnedModules.API.Adapters
+namespace Hydriuk.UnturnedModules.Adapters
 {
 #if OPENMOD
     [Service]

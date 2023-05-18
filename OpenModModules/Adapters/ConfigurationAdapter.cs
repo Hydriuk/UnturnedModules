@@ -1,4 +1,4 @@
-﻿using Hydriuk.UnturnedModules.API.Adapters;
+﻿using Hydriuk.UnturnedModules.Adapters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenMod.API.Ioc;
@@ -11,16 +11,9 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    public class ConfigurationAdapter<T> : IConfigurationAdapter<T> where T : new()
-    {
-        public T Configuration { get; }
-
-        public ConfigurationAdapter(IConfiguration configurator)
-        {
-            Configuration = new T();
-
-            configurator.Bind(Configuration);
-        }
-    }
+    //[PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
+    //public abstract class ConfigurationAdapter<T> : IConfigurationAdapter<T> where T : new()
+    //{
+    //    public T Configuration => throw new NotImplementedException();
+    //}
 }

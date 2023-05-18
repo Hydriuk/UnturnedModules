@@ -3,7 +3,7 @@ using OpenMod.API.Ioc;
 #endif
 using SDG.Unturned;
 
-namespace Hydriuk.UnturnedModules.API.Adapters
+namespace Hydriuk.UnturnedModules.Adapters
 {
 #if OPENMOD
     [Service]

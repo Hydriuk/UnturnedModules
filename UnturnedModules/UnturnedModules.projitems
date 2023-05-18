@@ -9,14 +9,18 @@
     <Import_RootNamespace>Hydriuk.UnturnedModules</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\ICommandAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IConfigurationAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IEnvironmentAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IPermissionAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\IThreadAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)API\Adapters\ITranslationAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\ICommandAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IConfigurationAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IEnvironmentAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IPermissionAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IThreadAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\ITranslationAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\EquipmentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\InventoryExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\PlayerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\EPlayerKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\IPlayerKeysController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\PlayerKeysController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\PlayerKeysListener.cs" />
   </ItemGroup>
 </Project>
