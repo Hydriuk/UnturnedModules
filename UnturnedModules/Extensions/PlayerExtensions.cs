@@ -8,12 +8,17 @@ namespace Hydriuk.UnturnedModules.Extensions
     {
         public static CSteamID GetSteamID(this Player player)
         {
-            return player.channel.owner.playerID.steamID;
+            return player.GetSteamPlayer().playerID.steamID;
         }
 
         public static ITransportConnection GetTransportConnection(this Player player)
         {
-            return player.channel.GetOwnerTransportConnection();
+            return player.GetSteamPlayer().transportConnection;
+        }
+
+        public static SteamPlayer GetSteamPlayer(this Player player) 
+        {
+            return player.channel.owner;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Hydriuk.UnturnedModules.API.Adapters;
+﻿using Hydriuk.UnturnedModules.Adapters;
 using Rocket.API;
 using Rocket.API.Serialisation;
 using Rocket.Core;
