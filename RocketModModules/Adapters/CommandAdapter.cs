@@ -1,4 +1,5 @@
-﻿using Hydriuk.UnturnedModules.API.Adapters;
+﻿using Hydriuk.UnturnedModules.Adapters;
+using Rocket.API;
 using Rocket.Core;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -12,6 +13,11 @@ namespace Hydriuk.RocketModModules.Adapters
             UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
 
             R.Commands.Execute(uPlayer, command);
+        }
+
+        public void Execute(string command)
+        {
+            R.Commands.Execute(new ConsolePlayer(), command);
         }
     }
 }

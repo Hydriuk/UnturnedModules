@@ -41,5 +41,12 @@ namespace Hydriuk.OpenModModules.Adapters
 
             await _commandExecutor.ExecuteAsync(user, args, "/");
         }
+
+        public async void Execute(string command)
+        {
+            string[] args = ArgumentsParser.ParseArguments(command);
+
+            await _commandExecutor.ExecuteAsync(_consoleActorAccessor.Actor, args, "/");
+        }
     }
 }
