@@ -6,11 +6,12 @@
     <SharedGUID>39c1ab64-e2e2-40f4-b406-24961d1370f1</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>RocketModModules</Import_RootNamespace>
+    <Import_RootNamespace>Hydriuk.RocketModModules</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\CommandAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ConfigurationAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\CoroutineAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\EnvironmentAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\PermissionAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ThreadAdapter.cs" />
