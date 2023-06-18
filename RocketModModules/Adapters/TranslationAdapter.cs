@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    public class TranslationsAdapter : ITranslationAdapter
+    public class TranslationAdapter : ITranslationAdapter
     {
         private readonly TranslationList _translations;
 
-        public TranslationsAdapter(TranslationList translations)
+        public TranslationAdapter(TranslationList translations)
         {
             _translations = translations;
         }

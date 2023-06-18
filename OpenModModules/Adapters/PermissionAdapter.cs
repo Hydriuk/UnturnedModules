@@ -93,7 +93,7 @@ namespace Hydriuk.OpenModModules.Adapters
             return permissions;
         }
 
-        public async Task<IEnumerable<string>> GetPrioritizedPermission(CSteamID playerId, IEnumerable<string> permissions)
+        public async Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, IEnumerable<string> permissions)
         {
             IUser? user = await _userManager.FindUserAsync(KnownActorTypes.Player, playerId.ToString(), UserSearchMode.FindById);
 
@@ -120,7 +120,7 @@ namespace Hydriuk.OpenModModules.Adapters
             return prioritizedPermissions;
         }
 
-        public async Task<IEnumerable<string>> GetPrioritizedPermission(CSteamID playerId, string pattern)
+        public async Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, string pattern)
         {
             IUser? user = await _userManager.FindUserAsync(KnownActorTypes.Player, playerId.ToString(), UserSearchMode.FindById);
 

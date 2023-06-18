@@ -61,7 +61,7 @@ namespace Hydriuk.RocketModModules.Adapters
             return Task.FromResult<IEnumerable<string>>(permissions);
         }
 
-        public Task<IEnumerable<string>> GetPrioritizedPermission(CSteamID playerId, IEnumerable<string> permissions)
+        public Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, IEnumerable<string> permissions)
         {
             List<string> prioritizedPermissions = new List<string>();
             foreach (var group in _rocketPermissions.Groups)
@@ -84,7 +84,7 @@ namespace Hydriuk.RocketModModules.Adapters
             return Task.FromResult<IEnumerable<string>>(prioritizedPermissions);
         }
 
-        public Task<IEnumerable<string>> GetPrioritizedPermission(CSteamID playerId, string pattern)
+        public Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, string pattern)
         {
             List<string> prioritizedPermissions = new List<string>();
             foreach (var group in _rocketPermissions.Groups)
