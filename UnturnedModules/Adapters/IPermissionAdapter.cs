@@ -26,12 +26,8 @@ namespace Hydriuk.UnturnedModules.Adapters
 
         Task<bool> IsMemberOf(CSteamID playerId, string group);
 
-        Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, IEnumerable<string> permissions);
-
         Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, string pattern);
 
         Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId);
-
-        Task<IEnumerable<string>> PrioritizePermissions(CSteamID playerId, IEnumerable<string> permissions);
     }
 }
