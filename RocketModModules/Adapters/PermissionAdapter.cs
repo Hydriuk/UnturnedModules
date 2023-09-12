@@ -63,13 +63,10 @@ namespace Hydriuk.RocketModModules.Adapters
                 .GetGroups(uPlayer, true)
                 .OrderBy(group => group.Priority))
             {
-                System.Console.WriteLine(group.Id);
-
                 var permissions = group.Permissions.Select(permission => permission.Name);
 
                 foreach (var permission in permissions)
                 {
-                    System.Console.WriteLine(permission);
                     Match match = Regex.Match(permission, pattern);
 
                     if (match.Success && match.Length == permission.Length)

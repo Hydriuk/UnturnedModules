@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ICoroutineAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\IEnvironmentAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\IPermissionAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IServiceAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\IThreadAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ITranslationAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\EquipmentExtensions.cs" />
