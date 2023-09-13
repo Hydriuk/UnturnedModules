@@ -10,7 +10,7 @@ namespace Hydriuk.UnturnedModules.Adapters
 #if OPENMOD
     [Service]
 #endif
-    public interface IServiceAdapter 
+    public interface IServiceAdapter
     {
         Task<TService> GetServiceAsync<TService>();
     }

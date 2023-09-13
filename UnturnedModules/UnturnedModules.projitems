@@ -9,6 +9,7 @@
     <Import_RootNamespace>Hydriuk.UnturnedModules</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Adapters\IAdaptablePlugin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ICommandAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\IConfigurationAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ICoroutineAdapter.cs" />
