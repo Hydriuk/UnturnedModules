@@ -38,7 +38,7 @@ namespace Hydriuk.OpenModModules.Adapters
 
             _isRunning = true;
 
-            while(_fixedUpdateActions.Count > 0)
+            while (_fixedUpdateActions.Count > 0)
             {
                 foreach (Action action in _fixedUpdateActions.Values)
                 {
@@ -50,7 +50,5 @@ namespace Hydriuk.OpenModModules.Adapters
 
             _isRunning = false;
         }
-
- 
     }
 }

@@ -12,7 +12,7 @@ namespace Hydriuk.UnturnedModules.PlayerKeys
 #endif
     public class PlayerKeysController : IPlayerKeysController
     {
-        public PlayerKeysController() 
+        public PlayerKeysController()
         {
             Player.onPlayerCreated += AddListener;
 

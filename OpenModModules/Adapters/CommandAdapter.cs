@@ -7,12 +7,6 @@ using OpenMod.Core.Console;
 using OpenMod.Core.Helpers;
 using OpenMod.Core.Users;
 using SDG.Unturned;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Protocols.WSTrust;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {

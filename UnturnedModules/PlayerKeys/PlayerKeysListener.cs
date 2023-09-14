@@ -1,7 +1,5 @@
 ﻿using SDG.Unturned;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Hydriuk.UnturnedModules.PlayerKeys

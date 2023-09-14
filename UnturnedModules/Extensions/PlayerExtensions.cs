@@ -16,7 +16,7 @@ namespace Hydriuk.UnturnedModules.Extensions
             return player.GetSteamPlayer().transportConnection;
         }
 
-        public static SteamPlayer GetSteamPlayer(this Player player) 
+        public static SteamPlayer GetSteamPlayer(this Player player)
         {
             return player.channel.owner;
         }

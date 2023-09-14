@@ -2,8 +2,6 @@
 using Rocket.API;
 using Rocket.API.Serialisation;
 using Rocket.Core;
-using Rocket.Core.Assets;
-using Rocket.Unturned.Player;
 using Steamworks;
 using System.Collections.Generic;
 using System.Linq;
