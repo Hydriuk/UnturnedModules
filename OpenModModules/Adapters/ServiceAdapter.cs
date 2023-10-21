@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Hydriuk.OpenModModules.Adapters
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    internal class ServiceAdapter : IServiceAdapter, IDisposable
+    internal class ServiceAdapter : IServiceAdapter
     {
         private readonly IPluginActivator _pluginActivator;
 
@@ -40,17 +40,18 @@ namespace Hydriuk.OpenModModules.Adapters
             if (plugin is null)
             {
                 _loadedTask = new TaskCompletionSource<object>();
-                await Console.Out.WriteLineAsync("[Hydriuk.Plugins.Tools] - Plugin not activated. Waiting for plugin to load");
+
+                await Console.Out.WriteLineAsync($"[Hydriuk.Plugins.Tools] - Loading {typeof(TService)}. Plugin {pluginAssembly.FullName} not activated. Waiting for plugin to load");
                 await _loadedTask.Task;
 
                 plugin = TryGetPlugin(pluginAssembly);
             }
 
             if (plugin is null)
-                throw new Exception("Plugin could not be activated");
+                throw new Exception("[Hydriuk.Plugins.Tools] - Plugin could not be activated");
 
             if (plugin is not IAdaptablePlugin adaptablePlugin)
-                throw new Exception("Plugin does not implement IAdaptablePlugin");
+                throw new Exception("[Hydriuk.Plugins.Tools] - Plugin does not implement IAdaptablePlugin");
 
             return adaptablePlugin.ServiceProvider.GetRequiredService<TService>();
         }
