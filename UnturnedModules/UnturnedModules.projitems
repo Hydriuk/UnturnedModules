@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\EquipmentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\InventoryExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\PlayerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\TransformExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\Vector3Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\EPlayerKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerKeys\IPlayerKeysController.cs" />
