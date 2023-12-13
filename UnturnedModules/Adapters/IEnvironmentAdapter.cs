@@ -1,6 +1,7 @@
 ﻿#if OPENMOD
 using OpenMod.API.Ioc;
 #endif
+using System.Threading.Tasks;
 
 namespace Hydriuk.UnturnedModules.Adapters
 {
@@ -9,6 +10,6 @@ namespace Hydriuk.UnturnedModules.Adapters
 #endif
     public interface IEnvironmentAdapter
     {
-        string Directory { get; }
+        Task<string> GetDirectory<T>() where T : IAdaptablePlugin;
     }
 }

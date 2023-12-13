@@ -1,9 +1,8 @@
 ﻿#if OPENMOD
 using OpenMod.API.Ioc;
-#elif ROCKETMOD
-using Rocket.API;
 #endif
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Hydriuk.UnturnedModules.Adapters
@@ -13,6 +12,7 @@ namespace Hydriuk.UnturnedModules.Adapters
 #endif
     public interface IServiceAdapter : IDisposable
     {
-        Task<TService> GetServiceAsync<TService>();
+        Task<TService> GetServiceAsync<TPluginAssembly, TService>() where TPluginAssembly : IAdaptablePlugin;
+        Task<IAdaptablePlugin> GetPlugin(Assembly pluginAssembly);
     }
 }

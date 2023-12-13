@@ -7,8 +7,8 @@ using System.Collections.Generic;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    public class CoroutineAdapter : ICoroutineAdapter
+    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
+    internal class CoroutineAdapter : ICoroutineAdapter
     {
         private readonly Dictionary<Guid, Action> _fixedUpdateActions = new Dictionary<Guid, Action>();
 

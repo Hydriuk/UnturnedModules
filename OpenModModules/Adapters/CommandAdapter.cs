@@ -10,8 +10,8 @@ using SDG.Unturned;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [PluginServiceImplementation(Lifetime = ServiceLifetime.Transient)]
-    public class CommandAdapter : ICommandAdapter
+    [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
+    internal class CommandAdapter : ICommandAdapter
     {
         private readonly ICommandExecutor _commandExecutor;
         private readonly IConsoleActorAccessor _consoleActorAccessor;

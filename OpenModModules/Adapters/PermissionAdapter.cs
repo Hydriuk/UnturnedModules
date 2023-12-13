@@ -13,14 +13,12 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [PluginServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    public class PermissionAdapter : IPermissionAdapter
+    [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
+    internal class PermissionAdapter : IPermissionAdapter
     {
         private readonly IUserManager _userManager;
         private readonly IPermissionStore _permissionStore;
         private readonly IPermissionRoleStore _permissionRoleStore;
-
-        public const int test = 1;
 
         public PermissionAdapter(
             IUserManager userManager,
