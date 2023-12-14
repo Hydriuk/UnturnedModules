@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    public class CoroutineAdapter : MonoBehaviour, ICoroutineAdapter
+    internal class CoroutineAdapter : MonoBehaviour, ICoroutineAdapter
     {
         private readonly Dictionary<Guid, Action> _fixedUpdateActions = new Dictionary<Guid, Action>();
 

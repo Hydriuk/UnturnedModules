@@ -10,7 +10,7 @@ namespace Hydriuk.UnturnedModules.Adapters
 #endif
     public interface ITranslationAdapter 
     {
-        Task<ITranslations> GetTranslations<T>() where T : IAdaptablePlugin;
+        ITranslations GetTranslations();
     }
 
     public interface ITranslations

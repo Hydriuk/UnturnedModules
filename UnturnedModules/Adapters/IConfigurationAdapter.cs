@@ -10,13 +10,7 @@ namespace Hydriuk.UnturnedModules.Adapters
 #endif
     public interface IConfigurationAdapter 
     {
-        Task<IConfProxy<TConfiguration>> GetConfiguration<TPlugin, TConfiguration>()
-            where TPlugin : IAdaptablePlugin
-            where TConfiguration : new();
-    }
-
-    public interface IConfProxy<T>
-    {
-        T Configuration { get; }
+        TConfiguration GetConfiguration<TConfiguration>()
+            where TConfiguration : class, new();
     }
 }

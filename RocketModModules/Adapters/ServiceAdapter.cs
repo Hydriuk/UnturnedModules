@@ -1,6 +1,8 @@
 ﻿using Hydriuk.UnturnedModules.Adapters;
 using Rocket.API;
 using Rocket.Core;
+using Rocket.Core.Logging;
+using SDG.Unturned;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -8,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    public class ServiceAdapter : IServiceAdapter
+    internal class ServiceAdapter : IUnsafeServiceAdapter
     {
         private TaskCompletionSource<object>? _loadedTask;
 
-        public ServiceAdapter(IAdaptablePlugin plugin)
+        public ServiceAdapter()
         {
             R.Plugins.OnPluginsLoaded += OnPluginsLoaded;
         }
@@ -22,10 +24,36 @@ namespace Hydriuk.RocketModModules.Adapters
             R.Plugins.OnPluginsLoaded -= OnPluginsLoaded;
         }
 
-        public async Task<TService> GetServiceAsync<TService>()
+        public async Task<TService> GetServiceAsync<TPluginAssembly, TService>() where TPluginAssembly : IAdaptablePlugin
         {
             Assembly pluginAssembly = typeof(TService).Assembly;
 
+            IAdaptablePlugin plugin = await GetPluginAsync(pluginAssembly);
+
+            PropertyInfo serviceInfo = plugin
+                .GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .FirstOrDefault(property => property.PropertyType == typeof(TService));
+
+            return (TService)serviceInfo.GetValue(plugin);
+        }
+
+        public TService GetService<TService>() => GetService<TService>(Assembly.GetCallingAssembly());
+        public TService GetService<TService>(Assembly pluginAssembly)
+        {
+            IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
+                throw new Exception($"Plugin {pluginAssembly.FullName} not found");
+
+            PropertyInfo serviceInfo = plugin
+                .GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .FirstOrDefault(property => property.PropertyType == typeof(TService));
+
+            return (TService)serviceInfo.GetValue(plugin);
+        }
+
+        public async Task<IAdaptablePlugin> GetPluginAsync(Assembly pluginAssembly)
+        {
             // Try to get the plugin if already activated
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly);
 
@@ -34,24 +62,38 @@ namespace Hydriuk.RocketModModules.Adapters
             {
                 _loadedTask = new TaskCompletionSource<object>();
 
-                await Console.Out.WriteLineAsync("[Hydriuk.Plugins.Tools] - Loading {typeof(TService)}. Plugin {pluginAssembly.FullName} not activated. Waiting for plugin to load");
+                Logger.Log($"Loading external service. Plugin {pluginAssembly.FullName} not activated. Waiting for it to load");
+
                 await _loadedTask.Task;
+
+                Logger.Log($"Plugin loaded");
 
                 plugin = R.Plugins.GetPlugin(pluginAssembly);
             }
 
             if (plugin is null)
-                throw new Exception("[Hydriuk.Plugins.Tools] - Plugin could not be activated");
+            {
+                Logger.LogError("Plugin could not be activated");
+                throw new NullReferenceException("Variable plugin is null");
+            }
 
             if (plugin is not IAdaptablePlugin adaptablePlugin)
-                throw new Exception("[Hydriuk.Plugins.Tools] - Plugin does not implement IAdaptablePlugin");
+            {
+                Logger.LogError("Plugin does not implement IAdaptablePlugin");
+                throw new Exception("Variable plugin does not implement IAdaptablePlugin");
+            }
 
-            PropertyInfo serviceInfo = plugin
-                .GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .FirstOrDefault(property => property.PropertyType == typeof(TService));
+            return adaptablePlugin;
+        }
 
-            return (TService)serviceInfo.GetValue(plugin);
+        public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
+        public IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
+        {
+            IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
+                throw new Exception($"Plugin {pluginAssembly.FullName} not found");
+
+            return plugin as IAdaptablePlugin ??
+                throw new Exception($"Plugin {pluginAssembly.FullName} is not a IAdaptablePlugin");
         }
 
         private void OnPluginsLoaded()

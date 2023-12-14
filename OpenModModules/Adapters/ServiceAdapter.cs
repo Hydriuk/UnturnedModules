@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Hydriuk.OpenModModules.Adapters
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    internal class ServiceAdapter : IServiceAdapter
+    internal class ServiceAdapter : IUnsafeServiceAdapter
     {
         private readonly IPluginActivator _pluginActivator;
         private readonly ILogger<OpenModModules> _logger;
@@ -32,25 +32,24 @@ namespace Hydriuk.OpenModModules.Adapters
             PluginsLoadedListener.OpenModLoaded -= OnOpenModLoaded;
         }
 
-        public async Task<TService> GetServiceAsync<TService>()
-        {
-            Assembly pluginAssembly = typeof(TService).Assembly;
-
-            IAdaptablePlugin plugin = await GetPlugin(pluginAssembly);
-
-            return plugin.ServiceProvider.GetRequiredService<TService>();
-        }
-
         public async Task<TService> GetServiceAsync<TPluginAssembly, TService>() where TPluginAssembly : IAdaptablePlugin
         {
             Assembly pluginAssembly = typeof(TPluginAssembly).Assembly;
 
-            IAdaptablePlugin plugin = await GetPlugin(pluginAssembly);
+            IAdaptablePlugin plugin = await GetPluginAsync(pluginAssembly);
 
             return plugin.ServiceProvider.GetRequiredService<TService>();
         }
 
-        public async Task<IAdaptablePlugin> GetPlugin(Assembly pluginAssembly)
+        public TService GetService<TService>() => GetService<TService>(Assembly.GetExecutingAssembly());
+        public TService GetService<TService>(Assembly pluginAssembly)
+        {
+            IAdaptablePlugin plugin = GetAdaptablePlugin(pluginAssembly);
+
+            return plugin.ServiceProvider.GetRequiredService<TService>();
+        }
+
+        public async Task<IAdaptablePlugin> GetPluginAsync(Assembly pluginAssembly)
         {
             // Try to get the plugin if already activated
             IOpenModPlugin? plugin = TryGetPlugin(pluginAssembly);
@@ -64,22 +63,34 @@ namespace Hydriuk.OpenModModules.Adapters
 
                 await _loadedTask.Task;
 
+                _logger.LogInformation($"Plugin loaded");
+
                 plugin = TryGetPlugin(pluginAssembly);
             }
 
             if (plugin is null)
             {
                 _logger.LogError("Plugin could not be activated");
-                throw new NullReferenceException("plugin is null");
+                throw new NullReferenceException("Variable plugin is null");
             }
 
             if (plugin is not IAdaptablePlugin adaptablePlugin)
             {
                 _logger.LogError("Plugin does not implement IAdaptablePlugin");
-                throw new Exception("plugin does not implement IAdaptablePlugin");
+                throw new Exception("Variable plugin does not implement IAdaptablePlugin");
             }
 
             return adaptablePlugin;
+        }
+
+        public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
+        public IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
+        {
+            IOpenModPlugin plugin = TryGetPlugin(pluginAssembly) ??
+                throw new Exception($"Plugin {pluginAssembly.FullName} not found");
+
+            return plugin as IAdaptablePlugin ??
+                throw new Exception($"Plugin {pluginAssembly.FullName} is not a IAdaptablePlugin");
         }
 
         private IOpenModPlugin? TryGetPlugin(Assembly pluginAssembly)

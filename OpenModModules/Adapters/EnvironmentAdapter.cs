@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
+    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
     internal class EnvironmentAdapter : IEnvironmentAdapter
     {
-        private readonly IServiceAdapter _serviceAdapter;
+        private readonly IUnsafeServiceAdapter _serviceAdapter;
 
-        public EnvironmentAdapter(IServiceAdapter serviceAdapter)
+        public EnvironmentAdapter(IUnsafeServiceAdapter serviceAdapter)
         {
             _serviceAdapter = serviceAdapter;
         }
 
-        public async Task<string> GetDirectory<T>() where T : IAdaptablePlugin
+        public string GetDirectory()
         {
-            Assembly pluginAssembly = typeof(T).Assembly;
+            Assembly pluginAssembly = Assembly.GetCallingAssembly();
 
-            IAdaptablePlugin plugin = await _serviceAdapter.GetPlugin(pluginAssembly);
+            IAdaptablePlugin plugin = _serviceAdapter.GetAdaptablePlugin(pluginAssembly);
 
             return plugin.WorkingDirectory;
         }

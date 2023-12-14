@@ -13,22 +13,24 @@ namespace Hydriuk.OpenModModules.Adapters
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
     internal class TranslationAdapter : ITranslationAdapter
     {
-        private readonly IServiceAdapter _serviceAdapter;
+        private readonly IUnsafeServiceAdapter _serviceAdapter;
 
-        public TranslationAdapter(IServiceAdapter serviceAdapter)
+        public TranslationAdapter(IUnsafeServiceAdapter serviceAdapter)
         {
             _serviceAdapter = serviceAdapter;
         }
 
-        public async Task<ITranslations> GetTranslations<T>() where T : IAdaptablePlugin
+        public ITranslations GetTranslations()
         {
-            IStringLocalizer translations = await _serviceAdapter.GetServiceAsync<T, IStringLocalizer>();
-            ILogger<T> logger = await _serviceAdapter.GetServiceAsync<T, ILogger<T>>();
+            Assembly pluginAssembly = Assembly.GetExecutingAssembly();
 
-            return new Translations<T>(translations, logger);
+            IStringLocalizer translations = _serviceAdapter.GetService<IStringLocalizer>();
+            ILogger logger = _serviceAdapter.GetService<ILogger>();
+
+            return new Translations(translations, logger, pluginAssembly);
         }
 
-        private class Translations<T> : ITranslations
+        private class Translations : ITranslations
         {
             public string this[string key] => _translations?[key];
 
@@ -49,12 +51,16 @@ namespace Hydriuk.OpenModModules.Adapters
             }
 
             private readonly IStringLocalizer _translations;
-            private readonly ILogger<T> _logger;
+            private readonly ILogger _logger;
 
-            public Translations(IStringLocalizer translations, ILogger<T> logger)
+            private readonly Assembly _pluginAssembly;
+
+            public Translations(IStringLocalizer translations, ILogger logger, Assembly pluginAssembly)
             {
                 _translations = translations;
                 _logger = logger;
+
+                _pluginAssembly = pluginAssembly;
             }
 
             private void LogError(object arguments, FormatException ex)
@@ -65,7 +71,7 @@ namespace Hydriuk.OpenModModules.Adapters
                     .Aggregate((acc, curr) => $"{acc} {curr}");
 
                 _logger.LogError(ex.Message);
-                _logger.LogError($"Please, review your {typeof(T).Assembly.FullName} translations file. One or more of the parameters is wrongly written.");
+                _logger.LogError($"Please, review your {_pluginAssembly.FullName} translations file. One or more of the parameters is wrongly written.");
                 _logger.LogError($"Available parameters are : {propertiesString}");
             }
         }

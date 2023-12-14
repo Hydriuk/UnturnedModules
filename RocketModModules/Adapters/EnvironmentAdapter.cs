@@ -1,17 +1,23 @@
 ﻿using Hydriuk.UnturnedModules.Adapters;
 using Rocket.Core.Plugins;
+using System.Reflection;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    public class EnvironmentAdapter : IEnvironmentAdapter
+    internal class EnvironmentAdapter : IEnvironmentAdapter
     {
-        private readonly RocketPlugin _plugin;
+        private readonly IUnsafeServiceAdapter _serviceAdapter;
 
-        public EnvironmentAdapter(RocketPlugin plugin)
+        public EnvironmentAdapter(IUnsafeServiceAdapter serviceAdapter)
         {
-            _plugin = plugin;
+            _serviceAdapter = serviceAdapter;
         }
 
-        public string Directory => _plugin.Directory;
+        public string GetDirectory()
+        {
+            RocketPlugin plugin = _serviceAdapter.GetAdaptablePlugin(Assembly.GetCallingAssembly()) as RocketPlugin;
+
+            return plugin.Directory;
+        }
     }
 }
