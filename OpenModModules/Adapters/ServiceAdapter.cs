@@ -11,15 +11,14 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    internal class ServiceAdapter : IUnsafeServiceAdapter
+    internal class ServiceAdapter : IServiceAdapter
     {
         private readonly IPluginActivator _pluginActivator;
-        private readonly ILogger<OpenModModules> _logger;
+        private readonly ILogger _logger;
 
         private TaskCompletionSource<object>? _loadedTask;
 
-        public ServiceAdapter(IPluginActivator pluginActivator, ILogger<OpenModModules> logger)
+        public ServiceAdapter(IPluginActivator pluginActivator, ILogger logger)
         {
             _pluginActivator = pluginActivator;
             _logger = logger;
@@ -42,7 +41,7 @@ namespace Hydriuk.OpenModModules.Adapters
         }
 
         public TService GetService<TService>() => GetService<TService>(Assembly.GetExecutingAssembly());
-        public TService GetService<TService>(Assembly pluginAssembly)
+        private TService GetService<TService>(Assembly pluginAssembly)
         {
             IAdaptablePlugin plugin = GetAdaptablePlugin(pluginAssembly);
 
@@ -84,10 +83,10 @@ namespace Hydriuk.OpenModModules.Adapters
         }
 
         public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
-        public IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
+        private IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
         {
             IOpenModPlugin plugin = TryGetPlugin(pluginAssembly) ??
-                throw new Exception($"Plugin {pluginAssembly.FullName} not found");
+                throw new Exception($"Plugin {pluginAssembly.FullName} not found. Make sure the plugin finished loading");
 
             return plugin as IAdaptablePlugin ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} is not a IAdaptablePlugin");

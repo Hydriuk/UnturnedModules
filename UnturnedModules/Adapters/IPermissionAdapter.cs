@@ -1,15 +1,9 @@
-﻿#if OPENMOD
-using OpenMod.API.Ioc;
-#endif
-using Steamworks;
+﻿using Steamworks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Hydriuk.UnturnedModules.Adapters
 {
-#if OPENMOD
-    [Service]
-#endif
     public interface IPermissionAdapter
     {
         Task<IEnumerable<string>> GetPermissions(CSteamID playerId, string pattern = "");

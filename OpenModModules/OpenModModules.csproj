@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>openmod openmod-plugin unturned</PackageTags>
+    <PackageTags>openmod unturned</PackageTags>
     <RootNamespace>Hydriuk.OpenModModules</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateNugetPackage>true</GenerateNugetPackage>
@@ -12,9 +12,9 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.0</Version>
-    <InformationalVersion>0.1.0</InformationalVersion>
-    <PackageVersion>0.1.0</PackageVersion>
+    <Version>1.1.0</Version>
+    <InformationalVersion>1.1.0</InformationalVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <AssemblyName>Hydriuk.OpenModModules</AssemblyName>
     <Configurations>Release</Configurations>
   </PropertyGroup>

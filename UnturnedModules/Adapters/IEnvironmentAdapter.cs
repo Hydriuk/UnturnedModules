@@ -1,14 +1,7 @@
-﻿#if OPENMOD
-using OpenMod.API.Ioc;
-#endif
-
-namespace Hydriuk.UnturnedModules.Adapters
+﻿namespace Hydriuk.UnturnedModules.Adapters
 {
-#if OPENMOD
-    [Service]
-#endif
-    public interface IEnvironmentAdapter
+    public interface IEnvironmentAdapter<TPlugin> where TPlugin : IAdaptablePlugin
     {
-        string GetDirectory();
+        string Directory { get; }
     }
 }

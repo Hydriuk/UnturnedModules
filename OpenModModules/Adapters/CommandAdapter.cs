@@ -10,7 +10,6 @@ using SDG.Unturned;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
     internal class CommandAdapter : ICommandAdapter
     {
         private readonly ICommandExecutor _commandExecutor;

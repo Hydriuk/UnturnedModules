@@ -1,30 +1,19 @@
 ﻿using Hydriuk.UnturnedModules.Adapters;
-using Microsoft.Extensions.DependencyInjection;
-using OpenMod.API;
-using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
-using System.Reflection;
-using System.Threading.Tasks;
+using System;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    internal class EnvironmentAdapter : IEnvironmentAdapter
+    internal class EnvironmentAdapter<TPlugin> : IEnvironmentAdapter<TPlugin> where TPlugin : IAdaptablePlugin
     {
-        private readonly IUnsafeServiceAdapter _serviceAdapter;
+        public string Directory { get => _plugin.WorkingDirectory; }
 
-        public EnvironmentAdapter(IUnsafeServiceAdapter serviceAdapter)
+        private readonly IOpenModPlugin _plugin;
+
+        public EnvironmentAdapter(IPluginAccessor<TPlugin> plugin)
         {
-            _serviceAdapter = serviceAdapter;
-        }
-
-        public string GetDirectory()
-        {
-            Assembly pluginAssembly = Assembly.GetCallingAssembly();
-
-            IAdaptablePlugin plugin = _serviceAdapter.GetAdaptablePlugin(pluginAssembly);
-
-            return plugin.WorkingDirectory;
+            _plugin = plugin.Instance ??
+                throw new Exception("Plugin not found. Make sure the plugin finished loading");
         }
     }
 }

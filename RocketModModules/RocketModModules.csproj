@@ -81,7 +81,6 @@
     <Compile Include="Adapters\ServiceAdapter.cs" />
     <Compile Include="Adapters\ThreadAdapter.cs" />
     <Compile Include="Adapters\TranslationAdapter.cs" />
-    <Compile Include="RocketModModules.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

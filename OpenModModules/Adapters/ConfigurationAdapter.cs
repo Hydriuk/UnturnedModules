@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using OpenMod.API.Ioc;
+using OpenMod.API.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Protocols.WSTrust;
@@ -14,27 +15,14 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
-    internal class ConfigurationAdapter : IConfigurationAdapter
+    internal class ConfigurationAdapter<TConfiguration> : IConfigurationAdapter<TConfiguration> where TConfiguration : class, new()
     {
-        private readonly IUnsafeServiceAdapter _serviceAdapter;
+        public TConfiguration Configuration {  get; private set; }
 
-        public ConfigurationAdapter(IUnsafeServiceAdapter serviceAdapter)
+        public ConfigurationAdapter(IConfiguration configurator)
         {
-            _serviceAdapter = serviceAdapter;
-        }
-
-        public TConfiguration GetConfiguration<TConfiguration>()
-            where TConfiguration : class, new()
-        {
-            Assembly pluginAssembly = Assembly.GetExecutingAssembly();
-
-            TConfiguration configuration = new TConfiguration();
-            IConfiguration configurator = _serviceAdapter.GetService<IConfiguration>(pluginAssembly);
-
-            configurator.Bind(configuration);
-
-            return configuration;
+            Configuration = new TConfiguration();
+            configurator.Bind(Configuration);
         }
     }
 }

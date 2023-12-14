@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton)]
     internal class PermissionAdapter : IPermissionAdapter
     {
         private readonly IUserManager _userManager;

@@ -1,16 +1,7 @@
-﻿#if OPENMOD
-using OpenMod.API.Ioc;
-#endif
-using System.Threading.Tasks;
-
-namespace Hydriuk.UnturnedModules.Adapters
+﻿namespace Hydriuk.UnturnedModules.Adapters
 {
-#if OPENMOD
-    [Service]
-#endif
-    public interface IConfigurationAdapter 
+    public interface IConfigurationAdapter<TConfiguration> where TConfiguration : class, new()
     {
-        TConfiguration GetConfiguration<TConfiguration>()
-            where TConfiguration : class, new();
+        TConfiguration Configuration { get; }
     }
 }
