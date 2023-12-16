@@ -12,11 +12,9 @@ namespace Hydriuk.RocketModModules.Adapters
 
         private readonly RocketPlugin _plugin;
 
-        public EnvironmentAdapter(IOpenModPlugin)
+        public EnvironmentAdapter(RocketPlugin plugin)
         {
-            Assembly pluginAssembly = typeof(TPlugin).Assembly;
-
-            _plugin = R.Plugins.GetPlugin(pluginAssembly) as RocketPlugin;
+            _plugin = plugin;
         }
     }
 }

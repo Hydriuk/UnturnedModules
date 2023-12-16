@@ -24,35 +24,49 @@ namespace Hydriuk.RocketModModules.Adapters
             R.Plugins.OnPluginsLoaded -= OnPluginsLoaded;
         }
 
-        public async Task<TService> GetServiceAsync<TPluginAssembly, TService>() where TPluginAssembly : IAdaptablePlugin
+        private void OnPluginsLoaded()
         {
-            Assembly pluginAssembly = typeof(TService).Assembly;
-
-            IAdaptablePlugin plugin = await GetPluginAsync(pluginAssembly);
-
-            PropertyInfo serviceInfo = plugin
-                .GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .FirstOrDefault(property => property.PropertyType == typeof(TService));
-
-            return (TService)serviceInfo.GetValue(plugin);
+            _loadedTask?.SetResult(null);
         }
 
-        public TService GetService<TService>() => GetService<TService>(Assembly.GetCallingAssembly());
-        private TService GetService<TService>(Assembly pluginAssembly)
+        public Task<TService> GetServiceAsync<TService>() 
+            where TService : notnull
         {
+            return GetServiceAsync<TService>(typeof(TService).Assembly);
+        }
+
+        public async Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) 
+            where TService : notnull
+        {
+            IRocketPlugin plugin = await GetPluginAsync(pluginAssembly);
+
+            return GetService<TService>(plugin);
+        }
+
+        public TService GetService<TService>() 
+            where TService : notnull
+        {
+            Assembly pluginAssembly = Assembly.GetCallingAssembly();
+
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} not found");
 
+            return GetService<TService>(plugin);
+        }
+
+        private TService GetService<TService>(IRocketPlugin plugin) 
+            where TService : notnull
+        {
             PropertyInfo serviceInfo = plugin
                 .GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .FirstOrDefault(property => property.PropertyType == typeof(TService));
 
-            return (TService)serviceInfo.GetValue(plugin);
+            return (TService)serviceInfo?.GetValue(plugin) ??
+                throw new Exception("Service could not be found");
         }
 
-        public async Task<IAdaptablePlugin> GetPluginAsync(Assembly pluginAssembly)
+        private async Task<IRocketPlugin> GetPluginAsync(Assembly pluginAssembly)
         {
             // Try to get the plugin if already activated
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly);
@@ -77,28 +91,7 @@ namespace Hydriuk.RocketModModules.Adapters
                 throw new NullReferenceException("Variable plugin is null");
             }
 
-            if (plugin is not IAdaptablePlugin adaptablePlugin)
-            {
-                Logger.LogError("Plugin does not implement IAdaptablePlugin");
-                throw new Exception("Variable plugin does not implement IAdaptablePlugin");
-            }
-
-            return adaptablePlugin;
-        }
-
-        public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
-        private IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
-        {
-            IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
-                throw new Exception($"Plugin {pluginAssembly.FullName} not found");
-
-            return plugin as IAdaptablePlugin ??
-                throw new Exception($"Plugin {pluginAssembly.FullName} is not a IAdaptablePlugin");
-        }
-
-        private void OnPluginsLoaded()
-        {
-            _loadedTask?.SetResult(null);
+            return plugin;
         }
     }
 }

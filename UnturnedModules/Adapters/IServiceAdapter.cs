@@ -7,7 +7,7 @@ namespace Hydriuk.UnturnedModules.Adapters
     public interface IServiceAdapter : IDisposable
     {
         /// <summary>
-        /// Gets a service from the calling plugin.
+        /// Gets a service from the assembly the service is defined in.
         /// Do not call if the plugin is not loaded, or this method will cause a dead lock.
         /// </summary>
         /// <typeparam name="TService">The service to resolve</typeparam>

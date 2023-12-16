@@ -32,19 +32,27 @@ namespace Hydriuk.OpenModModules.Adapters
             PluginsLoadedListener.OpenModLoaded -= OnOpenModLoaded;
         }
 
-        public Task<TService> GetServiceAsync<TService>() where TService : notnull
+        private void OnOpenModLoaded(object sender, object args)
+        {
+            _loadedTask?.SetResult(args);
+        }
+
+        public Task<TService> GetServiceAsync<TService>()
+            where TService : notnull
         {
             return GetServiceAsync<TService>(typeof(TService).Assembly);
         }
 
-        public async Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) where TService : notnull
+        public async Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) 
+            where TService : notnull
         {
             IOpenModPlugin plugin = await GetPluginAsync(pluginAssembly);
 
             return GetService<TService>(plugin);
         }
 
-        public TService GetService<TService>() where TService : notnull
+        public TService GetService<TService>() 
+            where TService : notnull
         {
             return GetService<TService>(Assembly.GetCallingAssembly());
         }
@@ -58,7 +66,8 @@ namespace Hydriuk.OpenModModules.Adapters
             return GetService<TService>(plugin);
         }
 
-        private TService GetService<TService>(IOpenModPlugin plugin) where TService : notnull
+        private TService GetService<TService>(IOpenModPlugin plugin) 
+            where TService : notnull
         {
             return plugin.LifetimeScope.Resolve<TService>();
         }
@@ -102,11 +111,6 @@ namespace Hydriuk.OpenModModules.Adapters
             }
 
             return null;
-        }
-
-        private void OnOpenModLoaded(object sender, object args)
-        {
-            _loadedTask?.SetResult(args);
         }
 
         private class PluginsLoadedListener : IEventListener<OpenModInitializedEvent>
