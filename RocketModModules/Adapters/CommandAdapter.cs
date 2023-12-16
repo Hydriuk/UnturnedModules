@@ -6,7 +6,7 @@ using SDG.Unturned;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    internal class CommandAdapter : ICommandAdapter
+    public class CommandAdapter : ICommandAdapter
     {
         public void Execute(Player player, string command)
         {

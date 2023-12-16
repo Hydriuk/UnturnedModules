@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    internal class PermissionAdapter : IPermissionAdapter
+    public class PermissionAdapter : IPermissionAdapter
     {
         public async Task<IEnumerable<string>> GetGroups(CSteamID playerId) => await GetPrioritizedGroups(playerId);
 

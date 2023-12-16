@@ -5,22 +5,13 @@ using System.Reflection;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    internal class ConfigurationAdapter : IConfigurationAdapter
+    public class ConfigurationAdapter<TConfiguration> : IConfigurationAdapter<TConfiguration> where TConfiguration : class, new()
     {
-        private readonly IUnsafeServiceAdapter _serviceAdapter;
+        public TConfiguration Configuration { get; private set; }
 
-        public ConfigurationAdapter(IUnsafeServiceAdapter serviceAdapter)
+        public ConfigurationAdapter(TConfiguration configuration)
         {
-            _serviceAdapter = serviceAdapter;
-        }
-
-        public TConfiguration GetConfiguration<TConfiguration>() where TConfiguration : class, new()
-        {
-            Assembly pluginAssembly = Assembly.GetExecutingAssembly();
-
-            IRocketPlugin<TConfiguration> plugin = _serviceAdapter.GetAdaptablePlugin(pluginAssembly) as IRocketPlugin<TConfiguration>;
-
-            return plugin.Configuration.Instance;
+            Configuration = configuration;
         }
     }
 }

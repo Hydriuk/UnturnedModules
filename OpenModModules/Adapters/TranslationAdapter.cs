@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class TranslationAdapter : ITranslationAdapter
+    public class TranslationAdapter : ITranslationAdapter
     {
         public string this[string key] => _translations?[key];
 

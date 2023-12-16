@@ -4,7 +4,7 @@ using System;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class ThreadAdapter : IThreadAdapter
+    public class ThreadAdapter : IThreadAdapter
     {
         public async void RunOnMainThread(Action action)
         {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class PermissionAdapter : IPermissionAdapter
+    public class PermissionAdapter : IPermissionAdapter
     {
         private readonly IUserManager _userManager;
         private readonly IPermissionStore _permissionStore;

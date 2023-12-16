@@ -1,4 +1,5 @@
-﻿using Hydriuk.UnturnedModules.Adapters;
+﻿using Autofac;
+using Hydriuk.UnturnedModules.Adapters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Eventing;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class ServiceAdapter : IServiceAdapter
+    public class ServiceAdapter : IServiceAdapter
     {
         private readonly IPluginActivator _pluginActivator;
         private readonly ILogger _logger;
@@ -31,24 +32,38 @@ namespace Hydriuk.OpenModModules.Adapters
             PluginsLoadedListener.OpenModLoaded -= OnOpenModLoaded;
         }
 
-        public async Task<TService> GetServiceAsync<TPluginAssembly, TService>() where TPluginAssembly : IAdaptablePlugin
+        public Task<TService> GetServiceAsync<TService>() where TService : notnull
         {
-            Assembly pluginAssembly = typeof(TPluginAssembly).Assembly;
-
-            IAdaptablePlugin plugin = await GetPluginAsync(pluginAssembly);
-
-            return plugin.ServiceProvider.GetRequiredService<TService>();
+            return GetServiceAsync<TService>(typeof(TService).Assembly);
         }
 
-        public TService GetService<TService>() => GetService<TService>(Assembly.GetExecutingAssembly());
-        private TService GetService<TService>(Assembly pluginAssembly)
+        public async Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) where TService : notnull
         {
-            IAdaptablePlugin plugin = GetAdaptablePlugin(pluginAssembly);
+            IOpenModPlugin plugin = await GetPluginAsync(pluginAssembly);
 
-            return plugin.ServiceProvider.GetRequiredService<TService>();
+            return GetService<TService>(plugin);
         }
 
-        public async Task<IAdaptablePlugin> GetPluginAsync(Assembly pluginAssembly)
+        public TService GetService<TService>() where TService : notnull
+        {
+            return GetService<TService>(Assembly.GetCallingAssembly());
+        }
+
+        private TService GetService<TService>(Assembly pluginAssembly) 
+            where TService : notnull
+        {
+            IOpenModPlugin plugin = TryGetPlugin(pluginAssembly) ??
+                throw new Exception("Plugin not found");
+
+            return GetService<TService>(plugin);
+        }
+
+        private TService GetService<TService>(IOpenModPlugin plugin) where TService : notnull
+        {
+            return plugin.LifetimeScope.Resolve<TService>();
+        }
+
+        private async Task<IOpenModPlugin> GetPluginAsync(Assembly pluginAssembly)
         {
             // Try to get the plugin if already activated
             IOpenModPlugin? plugin = TryGetPlugin(pluginAssembly);
@@ -73,23 +88,7 @@ namespace Hydriuk.OpenModModules.Adapters
                 throw new NullReferenceException("Variable plugin is null");
             }
 
-            if (plugin is not IAdaptablePlugin adaptablePlugin)
-            {
-                _logger.LogError("Plugin does not implement IAdaptablePlugin");
-                throw new Exception("Variable plugin does not implement IAdaptablePlugin");
-            }
-
-            return adaptablePlugin;
-        }
-
-        public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
-        private IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
-        {
-            IOpenModPlugin plugin = TryGetPlugin(pluginAssembly) ??
-                throw new Exception($"Plugin {pluginAssembly.FullName} not found. Make sure the plugin finished loading");
-
-            return plugin as IAdaptablePlugin ??
-                throw new Exception($"Plugin {pluginAssembly.FullName} is not a IAdaptablePlugin");
+            return plugin;
         }
 
         private IOpenModPlugin? TryGetPlugin(Assembly pluginAssembly)

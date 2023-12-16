@@ -10,7 +10,7 @@ using SDG.Unturned;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class CommandAdapter : ICommandAdapter
+    public class CommandAdapter : ICommandAdapter
     {
         private readonly ICommandExecutor _commandExecutor;
         private readonly IConsoleActorAccessor _consoleActorAccessor;

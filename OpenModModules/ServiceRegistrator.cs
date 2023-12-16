@@ -15,25 +15,23 @@ namespace Hydriuk.OpenModModules
     {
         public static void ConfigureServices<TPlugin, TConfiguration>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection) 
             where TConfiguration : class, new()
-            where TPlugin : IAdaptablePlugin
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
             serviceCollection.AddSingleton<IThreadAdapter, ThreadAdapter>();
             serviceCollection.AddSingleton<ICommandAdapter, CommandAdapter>();
             serviceCollection.AddSingleton<IPermissionAdapter, PermissionAdapter>();
             serviceCollection.AddSingleton<ITranslationAdapter, TranslationAdapter>();
-            serviceCollection.AddSingleton<IEnvironmentAdapter<TPlugin>, EnvironmentAdapter<TPlugin>>();
+            serviceCollection.AddSingleton<IEnvironmentAdapter, EnvironmentAdapter<TPlugin>>();
             serviceCollection.AddSingleton<IConfigurationAdapter<TConfiguration>, ConfigurationAdapter<TConfiguration>>();
         }
 
         public static void ConfigureServices<TPlugin>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection)
-            where TPlugin : IAdaptablePlugin
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
             serviceCollection.AddSingleton<IThreadAdapter, ThreadAdapter>();
             serviceCollection.AddSingleton<ICommandAdapter, CommandAdapter>();
             serviceCollection.AddSingleton<IPermissionAdapter, PermissionAdapter>();
-            serviceCollection.AddSingleton<IEnvironmentAdapter<TPlugin>, EnvironmentAdapter<TPlugin>>();
+            serviceCollection.AddSingleton<IEnvironmentAdapter, EnvironmentAdapter<TPlugin>>();
             serviceCollection.AddSingleton<ITranslationAdapter, TranslationAdapter>();
         }
     }

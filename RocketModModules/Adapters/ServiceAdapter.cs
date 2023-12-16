@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    internal class ServiceAdapter : IUnsafeServiceAdapter
+    public class ServiceAdapter : IServiceAdapter
     {
         private TaskCompletionSource<object>? _loadedTask;
 
@@ -39,7 +39,7 @@ namespace Hydriuk.RocketModModules.Adapters
         }
 
         public TService GetService<TService>() => GetService<TService>(Assembly.GetCallingAssembly());
-        public TService GetService<TService>(Assembly pluginAssembly)
+        private TService GetService<TService>(Assembly pluginAssembly)
         {
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} not found");
@@ -87,7 +87,7 @@ namespace Hydriuk.RocketModModules.Adapters
         }
 
         public IAdaptablePlugin GetAdaptablePlugin() => GetAdaptablePlugin(Assembly.GetCallingAssembly());
-        public IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
+        private IAdaptablePlugin GetAdaptablePlugin(Assembly pluginAssembly)
         {
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} not found");

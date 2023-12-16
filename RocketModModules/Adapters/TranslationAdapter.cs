@@ -8,75 +8,61 @@ using System.Reflection;
 
 namespace Hydriuk.RocketModModules.Adapters
 {
-    internal class TranslationAdapter : ITranslationAdapter
+    public class TranslationAdapter : ITranslationAdapter
     {
-        private readonly IUnsafeServiceAdapter _serviceAdapter;
+        private readonly TranslationList _translations;
 
-        public TranslationAdapter(IUnsafeServiceAdapter serviceAdapter)
+        public string this[string key]
         {
-            _serviceAdapter = serviceAdapter;
+            get
+            {
+                if (key == null)
+                    throw new ArgumentNullException(nameof(key));
+
+                return _translations[key] ?? key;
+            }
         }
 
-        public ITranslations GetTranslations()
+        public string this[string key, object arguments]
         {
-            Assembly pluginAssembly = Assembly.GetExecutingAssembly();
+            get
+            {
+                if (key == null)
+                    throw new ArgumentNullException(nameof(key));
 
-            IAdaptablePlugin plugin = _serviceAdapter.GetAdaptablePlugin(pluginAssembly);
-
-            return new Translations(plugin.Translations.Instance);
+                return Translate(key, arguments);
+            }
         }
 
-        private class Translations : ITranslations
+        public TranslationAdapter(TranslationList translations)
         {
-            private readonly TranslationList _translations;
+            _translations = translations;
+        }
 
-            public string this[string key]
+        private string Translate(string key, object arguments)
+        {
+            string[] splittedText = _translations[key].Split('{', '}');
+
+            PropertyInfo[] properties = arguments.GetType().GetProperties();
+            string[] values = new string[properties.Length];
+
+            for (int i = 1; i < splittedText.Length; i += 2)
             {
-                get
-                {
-                    if (key == null)
-                        throw new ArgumentNullException(nameof(key));
+                PropertyInfo info = properties.FirstOrDefault(field => field.Name == splittedText[i]);
 
-                    return _translations[key] ?? key;
-                }
+                if (info == null)
+                    continue;
+
+                var index = (i - 1) / 2;
+
+                values[index] = info.GetValue(arguments).ToString();
+
+                splittedText[i] = $"{{{index}}}";
             }
 
-            public string this[string key, object arguments]
-            {
-                get
-                {
-                    if (key == null)
-                        throw new ArgumentNullException(nameof(key));
+            string format = string.Join(string.Empty, splittedText);
 
-                    string[] splittedText = _translations[key].Split('{', '}');
-
-                    PropertyInfo[] properties = arguments.GetType().GetProperties();
-                    string[] values = new string[properties.Length];
-
-                    for (int i = 1; i < splittedText.Length; i += 2)
-                    {
-                        PropertyInfo info = properties.FirstOrDefault(field => field.Name == splittedText[i]);
-
-                        if (info == null)
-                            continue;
-
-                        var index = (i - 1) / 2;
-
-                        values[index] = info.GetValue(arguments).ToString();
-
-                        splittedText[i] = $"{{{index}}}";
-                    }
-
-                    string format = string.Join(string.Empty, splittedText);
-
-                    return string.Format(format ?? key, values);
-                }
-            }
-
-            public Translations(TranslationList translations)
-            {
-                _translations = translations;
-            }
+            return string.Format(format ?? key, values);
         }
     }
 }

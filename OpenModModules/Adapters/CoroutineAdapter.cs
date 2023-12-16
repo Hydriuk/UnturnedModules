@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Hydriuk.OpenModModules.Adapters
 {
-    internal class CoroutineAdapter : ICoroutineAdapter
+    public class CoroutineAdapter : ICoroutineAdapter
     {
         private readonly Dictionary<Guid, Action> _fixedUpdateActions = new Dictionary<Guid, Action>();
 
