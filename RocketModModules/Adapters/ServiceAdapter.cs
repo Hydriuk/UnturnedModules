@@ -2,8 +2,11 @@
 using Rocket.API;
 using Rocket.Core;
 using Rocket.Core.Logging;
+using Rocket.Core.Plugins;
 using SDG.Unturned;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,9 +16,19 @@ namespace Hydriuk.RocketModModules.Adapters
     public class ServiceAdapter : IServiceAdapter
     {
         private TaskCompletionSource<object>? _loadedTask;
+        private readonly Dictionary<Type, Type> _implementingType = new Dictionary<Type, Type>();
 
-        public ServiceAdapter()
+        public ServiceAdapter(RocketPlugin plugin)
         {
+            var types = plugin.GetType()
+                .Assembly.GetTypes()
+                .Concat(Assembly.GetExecutingAssembly().GetTypes());
+
+            var classes = types.Where(t => t.IsClass);
+
+            _implementingType = types.Where(t => t.IsInterface)
+                .ToDictionary(t => t, t => classes.FirstOrDefault(c => t.IsAssignableFrom(c)));
+
             R.Plugins.OnPluginsLoaded += OnPluginsLoaded;
         }
 
@@ -60,7 +73,7 @@ namespace Hydriuk.RocketModModules.Adapters
             PropertyInfo serviceInfo = plugin
                 .GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .FirstOrDefault(property => property.PropertyType == typeof(TService));
+                .FirstOrDefault(property => property.PropertyType == _implementingType[typeof(TService)]);
 
             return (TService)serviceInfo?.GetValue(plugin) ??
                 throw new Exception("Service could not be found");

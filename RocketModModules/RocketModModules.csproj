@@ -81,7 +81,9 @@
     <Compile Include="Adapters\ServiceAdapter.cs" />
     <Compile Include="Adapters\ThreadAdapter.cs" />
     <Compile Include="Adapters\TranslationAdapter.cs" />
+    <Compile Include="PluginServiceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceRegistrator.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\UnturnedModules\UnturnedModules.projitems" Label="Shared" />

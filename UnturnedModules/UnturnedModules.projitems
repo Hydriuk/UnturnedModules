@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Adapters\ITranslationAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\EquipmentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\InventoryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\PlayerExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TransformExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\Vector3Extensions.cs" />

@@ -2,9 +2,9 @@
 
 namespace Hydriuk.UnturnedModules.Adapters
 {
-    public interface ICoroutineAdapter : IDisposable
+    internal interface ICoroutineAdapter : IDisposable
     {
-        void RunOnFixedUpdate(Guid reference, Action action);
-        void CancelFixedUpdate(Guid reference);
+        //void RunOnFixedUpdate(Guid reference, Action action);
+        //void CancelFixedUpdate(Guid reference);
     }
 }
