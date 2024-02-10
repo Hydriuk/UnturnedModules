@@ -23,5 +23,9 @@ namespace Hydriuk.UnturnedModules.Adapters
         Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId, string pattern);
 
         Task<IEnumerable<string>> GetPrioritizedPermissions(CSteamID playerId);
+
+        Task AddToGroup(CSteamID playerId, string group);
+
+        Task RemoveFromGroup(CSteamID playerId, string group);
     }
 }

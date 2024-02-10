@@ -123,5 +123,23 @@ namespace Hydriuk.RocketModModules.Adapters
 
             return Task.FromResult(isMember);
         }
+
+        public Task AddToGroup(CSteamID playerId, string group)
+        {
+            RocketPermissionsGroup rocketGroup = R.Permissions.GetGroup(group);
+
+            rocketGroup.Members.Add(playerId.ToString());
+
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveFromGroup(CSteamID playerId, string group)
+        {
+            RocketPermissionsGroup rocketGroup = R.Permissions.GetGroup(group);
+
+            rocketGroup.Members.Remove(playerId.ToString());
+
+            return Task.CompletedTask;
+        }
     }
 }

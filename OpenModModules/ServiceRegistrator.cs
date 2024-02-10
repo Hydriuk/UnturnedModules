@@ -1,6 +1,7 @@
 ﻿using Hydriuk.OpenModModules.Adapters;
 using Hydriuk.UnturnedModules.Adapters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenMod.API.Ioc;
 using OpenMod.Runtime;
 using System;
@@ -17,6 +18,7 @@ namespace Hydriuk.OpenModModules
             where TConfiguration : class, new()
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
+            serviceCollection.AddSingleton<ILogger<ServiceAdapter>, Logger<ServiceAdapter>>();
             serviceCollection.AddSingleton<IThreadAdapter, ThreadAdapter>();
             serviceCollection.AddSingleton<ICommandAdapter, CommandAdapter>();
             serviceCollection.AddSingleton<IPermissionAdapter, PermissionAdapter>();
@@ -28,6 +30,7 @@ namespace Hydriuk.OpenModModules
         public static void ConfigureServices<TPlugin>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
+            serviceCollection.AddSingleton<ILogger<ServiceAdapter>, Logger<ServiceAdapter>>();
             serviceCollection.AddSingleton<IThreadAdapter, ThreadAdapter>();
             serviceCollection.AddSingleton<ICommandAdapter, CommandAdapter>();
             serviceCollection.AddSingleton<IPermissionAdapter, PermissionAdapter>();

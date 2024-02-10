@@ -19,7 +19,7 @@ namespace Hydriuk.OpenModModules.Adapters
 
         private TaskCompletionSource<object>? _loadedTask;
 
-        public ServiceAdapter(IPluginActivator pluginActivator, ILogger logger)
+        public ServiceAdapter(IPluginActivator pluginActivator, ILogger<ServiceAdapter> logger)
         {
             _pluginActivator = pluginActivator;
             _logger = logger;

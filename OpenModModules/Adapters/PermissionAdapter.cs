@@ -227,5 +227,25 @@ namespace Hydriuk.OpenModModules.Adapters
 
             return roles.Any(role => role.Id == group);
         }
+
+        public async Task AddToGroup(CSteamID playerId, string group)
+        {
+            IUser? user = await _userManager.FindUserAsync(KnownActorTypes.Player, playerId.ToString(), UserSearchMode.FindById);
+
+            if (user == null)
+                return;
+
+            await _permissionRoleStore.AddRoleToActorAsync(user, group);
+        }
+
+        public async Task RemoveFromGroup(CSteamID playerId, string group)
+        {
+            IUser? user = await _userManager.FindUserAsync(KnownActorTypes.Player, playerId.ToString(), UserSearchMode.FindById);
+
+            if (user == null)
+                return;
+
+            await _permissionRoleStore.RemoveRoleFromActorAsync(user, group);
+        }
     }
 }
