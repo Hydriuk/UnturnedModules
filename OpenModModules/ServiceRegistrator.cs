@@ -24,7 +24,6 @@ namespace Hydriuk.OpenModModules
             serviceCollection.AddSingleton<IPermissionAdapter, PermissionAdapter>();
             serviceCollection.AddSingleton<ITranslationAdapter, TranslationAdapter>();
             serviceCollection.AddSingleton<IEnvironmentAdapter, EnvironmentAdapter<TPlugin>>();
-            serviceCollection.AddSingleton<IConfigurationAdapter<TConfiguration>, ConfigurationAdapter<TConfiguration>>();
         }
 
         public static void ConfigureServices<TPlugin>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection)

@@ -30,6 +30,22 @@ namespace Hydriuk.RocketModModules
                 RocketPlugin.OnPluginLoading += ConfigureServices;
         }
 
+        public ServiceRegistrator(IRocketPlugin plugin, IRocketPluginConfiguration configuration)
+        {
+            _plugin = plugin;
+            _pluginAssembly = _plugin.GetType().Assembly;
+            _services = new Dictionary<Type, object>()
+            {
+                { _plugin.GetType(), _plugin },
+                { configuration.GetType(), configuration }
+            };
+
+            if (R.Plugins.GetPlugin(_pluginAssembly) == null)
+                R.Plugins.OnPluginsLoaded += ConfigureServices;
+            else
+                RocketPlugin.OnPluginLoading += ConfigureServices;
+        }
+
         public void Dispose()
         {
             RocketPlugin.OnPluginLoading -= ConfigureServices;
@@ -69,7 +85,7 @@ namespace Hydriuk.RocketModModules
             // Create services
             foreach (ConstructorInfo constructor in orderedConstructors)
             {
-                if (constructor.DeclaringType == _plugin.GetType())
+                if (_services.ContainsKey(constructor.DeclaringType))
                     continue;
 
                 List<object> parameters = new List<object>();
@@ -130,10 +146,11 @@ namespace Hydriuk.RocketModModules
                 if (constructor == null)
                     throw new Exception($"Could not find any constructor for type {implementingType.Name}");
 
+                // Stop if constructor is already added
                 if (orderedConstructors.Contains(constructor))
                     continue;
 
-                // Get constructor parameters
+                // Add parameters of the constructor
                 var paramTypes = constructor
                     .GetParameters()
                     .Select(p => p.ParameterType);
