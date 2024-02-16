@@ -2,10 +2,7 @@
 using Rocket.API;
 using Rocket.Core;
 using Rocket.Core.Logging;
-using Rocket.Core.Plugins;
-using SDG.Unturned;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,19 +13,9 @@ namespace Hydriuk.RocketModModules.Adapters
     public class ServiceAdapter : IServiceAdapter
     {
         private TaskCompletionSource<object>? _loadedTask;
-        private readonly Dictionary<Type, Type> _implementingType = new Dictionary<Type, Type>();
 
-        public ServiceAdapter(RocketPlugin plugin)
+        public ServiceAdapter()
         {
-            var types = plugin.GetType()
-                .Assembly.GetTypes()
-                .Concat(Assembly.GetExecutingAssembly().GetTypes());
-
-            var classes = types.Where(t => t.IsClass);
-
-            _implementingType = types.Where(t => t.IsInterface)
-                .ToDictionary(t => t, t => classes.FirstOrDefault(c => t.IsAssignableFrom(c)));
-
             R.Plugins.OnPluginsLoaded += OnPluginsLoaded;
         }
 
@@ -70,13 +57,27 @@ namespace Hydriuk.RocketModModules.Adapters
         private TService GetService<TService>(IRocketPlugin plugin) 
             where TService : notnull
         {
+            var implementingType = GetImplementingTypes(plugin);
+
             PropertyInfo serviceInfo = plugin
                 .GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .FirstOrDefault(property => property.PropertyType == _implementingType[typeof(TService)]);
+                .FirstOrDefault(property => property.PropertyType == implementingType[typeof(TService)]);
 
             return (TService)serviceInfo?.GetValue(plugin) ??
                 throw new Exception("Service could not be found");
+        }
+
+        private Dictionary<Type, Type> GetImplementingTypes(IRocketPlugin plugin)
+        {
+            var types = plugin.GetType()
+                .Assembly.GetTypes()
+                .Concat(Assembly.GetExecutingAssembly().GetTypes());
+
+            var classes = types.Where(t => t.IsClass);
+
+            return types.Where(t => t.IsInterface)
+                .ToDictionary(t => t, t => classes.FirstOrDefault(c => t.IsAssignableFrom(c)));
         }
 
         private async Task<IRocketPlugin> GetPluginAsync(Assembly pluginAssembly)
