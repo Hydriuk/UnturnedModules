@@ -75,7 +75,6 @@
   <ItemGroup>
     <Compile Include="Adapters\CommandAdapter.cs" />
     <Compile Include="Adapters\ConfigurationAdapter.cs" />
-    <Compile Include="Adapters\CoroutineAdapter.cs" />
     <Compile Include="Adapters\EnvironmentAdapter.cs" />
     <Compile Include="Adapters\PermissionAdapter.cs" />
     <Compile Include="Adapters\ServiceAdapter.cs" />

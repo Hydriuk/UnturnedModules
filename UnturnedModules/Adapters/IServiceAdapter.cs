@@ -8,7 +8,7 @@ namespace Hydriuk.UnturnedModules.Adapters
     {
         /// <summary>
         /// Gets a service from the assembly the service is defined in.
-        /// Do not call if the plugin is not loaded, or this method will cause a dead lock.
+        /// Do not await this method if the plugin is not loaded, or it will cause a dead lock.
         /// </summary>
         /// <typeparam name="TService">The service to resolve</typeparam>
         /// <returns>The resolved service</returns>
@@ -22,6 +22,13 @@ namespace Hydriuk.UnturnedModules.Adapters
         /// <param name="pluginAssembly">Assembly containing the plugin</param>
         /// <returns>The resolved service</returns>
         Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) where TService : notnull;
+
+        /// <summary>
+        /// Gets a service from the current plugin.
+        /// </summary>
+        /// <typeparam name="TService">The service to resolve</typeparam>
+        /// <returns>The resolved service</returns>
+        /// <exception cref="Exception">The Plugin was not found or was not loaded yet</exception>
         TService GetService<TService>() where TService : notnull;
     }
 }
