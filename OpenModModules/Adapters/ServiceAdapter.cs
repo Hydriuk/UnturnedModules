@@ -1,11 +1,10 @@
 ﻿using Autofac;
 using Hydriuk.UnturnedModules.Adapters;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Eventing;
-using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using OpenMod.Core.Events;
+using SDG.Unturned;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -17,12 +16,20 @@ namespace Hydriuk.OpenModModules.Adapters
         private readonly IPluginActivator _pluginActivator;
         private readonly ILogger _logger;
 
-        private TaskCompletionSource<object>? _loadedTask;
+        private TaskCompletionSource<object>? _openModLoadTask;
+        private TaskCompletionSource<object> _levelLoadTask;
 
         public ServiceAdapter(IPluginActivator pluginActivator, ILogger<ServiceAdapter> logger)
         {
             _pluginActivator = pluginActivator;
             _logger = logger;
+
+            _levelLoadTask = new TaskCompletionSource<object>();
+
+            if (Level.isLoaded)
+                CompleteLevelLoadTask();
+            else
+                Level.onPostLevelLoaded += LateLoad;
 
             PluginsLoadedListener.OpenModLoaded += OnOpenModLoaded;
         }
@@ -30,11 +37,18 @@ namespace Hydriuk.OpenModModules.Adapters
         public void Dispose()
         {
             PluginsLoadedListener.OpenModLoaded -= OnOpenModLoaded;
+            Level.onPostLevelLoaded -= LateLoad;
+        }
+
+        private void LateLoad(int level) => CompleteLevelLoadTask();
+        private void CompleteLevelLoadTask()
+        {
+            _levelLoadTask.SetResult(true);
         }
 
         private void OnOpenModLoaded(object sender, object args)
         {
-            _loadedTask?.SetResult(args);
+            _openModLoadTask?.SetResult(args);
         }
 
         public Task<TService> GetServiceAsync<TService>()
@@ -48,7 +62,7 @@ namespace Hydriuk.OpenModModules.Adapters
         {
             IOpenModPlugin plugin = await GetPluginAsync(pluginAssembly);
 
-            return GetService<TService>(plugin);
+            return await GetServiceAsync<TService>(plugin);
         }
 
         public TService GetService<TService>() 
@@ -66,6 +80,13 @@ namespace Hydriuk.OpenModModules.Adapters
             return GetService<TService>(plugin);
         }
 
+        private async Task<TService> GetServiceAsync<TService>(IOpenModPlugin plugin)
+            where TService : notnull
+        {
+            await _levelLoadTask.Task;
+
+            return GetService<TService>(plugin);
+        }
         private TService GetService<TService>(IOpenModPlugin plugin) 
             where TService : notnull
         {
@@ -80,11 +101,11 @@ namespace Hydriuk.OpenModModules.Adapters
             // Wait for plugin to be activated through openmod
             if (plugin is null)
             {
-                _loadedTask = new TaskCompletionSource<object>();
+                _openModLoadTask = new TaskCompletionSource<object>();
 
                 _logger.LogInformation($"Loading external service. Plugin {pluginAssembly.FullName} not activated. Waiting for it to load");
 
-                await _loadedTask.Task;
+                await _openModLoadTask.Task;
 
                 _logger.LogInformation($"Plugin loaded");
 
