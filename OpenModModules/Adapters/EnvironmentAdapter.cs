@@ -1,5 +1,9 @@
 ﻿using Hydriuk.UnturnedModules.Adapters;
+using Microsoft.Extensions.DependencyInjection;
+using OpenMod.API;
 using OpenMod.API.Plugins;
+using OpenMod.Core.Plugins;
+using OpenMod.Runtime;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -7,20 +11,16 @@ using System.Reflection;
 namespace Hydriuk.OpenModModules.Adapters
 {
     public class EnvironmentAdapter<TPlugin> : IEnvironmentAdapter
+        where TPlugin : IOpenModComponent
     {
-        public string Directory { get => _plugin.WorkingDirectory; }
+        public string Directory { get; private set; }
 
-        private readonly IOpenModPlugin _plugin;
-
-        public EnvironmentAdapter(IPluginActivator pluginActivator)
+        public EnvironmentAdapter(IServiceProvider serviceProvider)
         {
-            Assembly pluginAssembly = typeof(TPlugin).Assembly;
+            IRuntime runtime = serviceProvider.GetRequiredService<IRuntime>();
+            PluginMetadataAttribute metadata = typeof(TPlugin).Assembly.GetCustomAttribute<PluginMetadataAttribute>();
 
-            IOpenModPlugin? plugin = pluginActivator.ActivatedPlugins
-                .FirstOrDefault(plugin => plugin.GetType().Assembly == pluginAssembly);
-
-            _plugin = plugin ??
-                throw new Exception("Plugin not found. Make sure the plugin finished loading");
+            Directory = PluginHelper.GetWorkingDirectory(runtime, metadata.Id);
         }
     }
 }
