@@ -14,30 +14,15 @@ namespace Hydriuk.RocketModModules.Adapters
     public class ServiceAdapter : IServiceAdapter
     {
         private TaskCompletionSource<object>? _rocketModLoadTask;
-        private readonly TaskCompletionSource<object> _levelLoadTask;
 
         public ServiceAdapter()
         {
-            _levelLoadTask = new TaskCompletionSource<object>();
-
-            if (Level.isLoaded)
-                CompleteLevelLoadTask();
-            else
-                Level.onPostLevelLoaded += LateLoad;
-
             R.Plugins.OnPluginsLoaded += OnPluginsLoaded;
         }
 
         public void Dispose()
         {
             R.Plugins.OnPluginsLoaded -= OnPluginsLoaded;
-            Level.onPostLevelLoaded -= LateLoad;
-        }
-
-        private void LateLoad(int level) => CompleteLevelLoadTask();
-        private void CompleteLevelLoadTask()
-        {
-            _levelLoadTask.SetResult(true);
         }
 
         private void OnPluginsLoaded()
@@ -45,18 +30,14 @@ namespace Hydriuk.RocketModModules.Adapters
             _rocketModLoadTask?.SetResult(null);
         }
 
-        public Task<TService> GetServiceAsync<TService>() 
-            where TService : notnull
-        {
-            return GetServiceAsync<TService>(typeof(TService).Assembly);
-        }
-
+        public Task<TService> GetServiceAsync<TService>()
+            where TService : notnull => GetServiceAsync<TService>(typeof(TService).Assembly);
         public async Task<TService> GetServiceAsync<TService>(Assembly pluginAssembly) 
             where TService : notnull
         {
             IRocketPlugin plugin = await GetPluginAsync(pluginAssembly);
 
-            return await GetServiceAsync<TService>(plugin);
+            return GetService<TService>(plugin);
         }
 
         public TService GetService<TService>() 
@@ -66,13 +47,6 @@ namespace Hydriuk.RocketModModules.Adapters
 
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} not found");
-
-            return GetService<TService>(plugin);
-        }
-
-        private async Task<TService> GetServiceAsync<TService>(IRocketPlugin plugin)
-        {
-            await _levelLoadTask.Task;
 
             return GetService<TService>(plugin);
         }

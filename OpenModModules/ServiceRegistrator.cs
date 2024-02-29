@@ -2,7 +2,10 @@
 using Hydriuk.UnturnedModules.Adapters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenMod.API;
+using OpenMod.API.Eventing;
 using OpenMod.API.Ioc;
+using OpenMod.Core.Events;
 using OpenMod.Runtime;
 using System;
 using System.Collections.Generic;
@@ -14,7 +17,8 @@ namespace Hydriuk.OpenModModules
 {
     public class ServiceRegistrator
     {
-        public static void ConfigureServices<TPlugin, TConfiguration>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection) 
+        public static void ConfigureServices<TPlugin, TConfiguration>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection)
+            where TPlugin : IOpenModComponent
             where TConfiguration : class, new()
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
@@ -27,6 +31,7 @@ namespace Hydriuk.OpenModModules
         }
 
         public static void ConfigureServices<TPlugin>(IOpenModServiceConfigurationContext openModStartupContext, IServiceCollection serviceCollection)
+            where TPlugin : IOpenModComponent
         {
             serviceCollection.AddSingleton<IServiceAdapter, ServiceAdapter>();
             serviceCollection.AddSingleton<ILogger<ServiceAdapter>, Logger<ServiceAdapter>>();
