@@ -1,4 +1,6 @@
-﻿using Rocket.API;
+﻿using Hydriuk.RocketModModules.Adapters;
+using Hydriuk.UnturnedModules.Adapters;
+using Rocket.API;
 using Rocket.Core;
 using Rocket.Core.Plugins;
 using System;
@@ -14,15 +16,25 @@ namespace Hydriuk.RocketModModules
 
         private readonly IRocketPlugin _plugin;
         private readonly Assembly _pluginAssembly;
+        private readonly IServiceAdapter _serviceAdapter;
 
         public ServiceRegistrator(IRocketPlugin plugin)
         {
+            _serviceAdapter = new ServiceAdapter();
             _plugin = plugin;
-            _pluginAssembly = _plugin.GetType().Assembly;
-            _services = new Dictionary<Type, object>()
-            {
-                { _plugin.GetType(), _plugin }
-            };
+
+            Type pluginType = _plugin.GetType();
+            _pluginAssembly = pluginType.Assembly;
+
+            // Plugin type
+            _services.Add(pluginType, _plugin);
+
+            // Add plugin's base class
+            _services.Add(pluginType.BaseType, _plugin);
+
+            // Add interfaces implemented by the plugin
+            foreach (var pluginInterface in _plugin.GetType().GetInterfaces())
+                _services.Add(pluginInterface, _plugin);
 
             if (R.Plugins.GetPlugin(_pluginAssembly) == null)
                 R.Plugins.OnPluginsLoaded += ConfigureServices;
@@ -30,20 +42,17 @@ namespace Hydriuk.RocketModModules
                 RocketPlugin.OnPluginLoading += ConfigureServices;
         }
 
-        public ServiceRegistrator(IRocketPlugin plugin, IRocketPluginConfiguration configuration)
+        public ServiceRegistrator(IRocketPlugin plugin, IRocketPluginConfiguration configuration): this(plugin)
         {
-            _plugin = plugin;
-            _pluginAssembly = _plugin.GetType().Assembly;
-            _services = new Dictionary<Type, object>()
-            {
-                { _plugin.GetType(), _plugin },
-                { configuration.GetType(), configuration }
-            };
+            // Add generic rocket plugin type
+            _services.Add(plugin.GetType().BaseType.GetGenericTypeDefinition(), _plugin);
 
-            if (R.Plugins.GetPlugin(_pluginAssembly) == null)
-                R.Plugins.OnPluginsLoaded += ConfigureServices;
-            else
-                RocketPlugin.OnPluginLoading += ConfigureServices;
+            // Add configuration type
+            _services.Add(configuration.GetType(), configuration);
+
+            // Add configuration implemented interfaces
+            foreach (var configurationInterface in configuration.GetType().GetInterfaces())
+                _services.Add(configurationInterface, configuration);
         }
 
         public void Dispose()
@@ -56,6 +65,8 @@ namespace Hydriuk.RocketModModules
                 if (service is IDisposable disposable)
                     disposable.Dispose();
             }
+
+            _serviceAdapter.Dispose();
         }
 
         private void ConfigureServices(IRocketPlugin plugin, ref bool cancelLoading)
@@ -78,6 +89,21 @@ namespace Hydriuk.RocketModModules
             HashSet<ConstructorInfo> orderedConstructors = new HashSet<ConstructorInfo>();
             IEnumerable<Type> serviceTypes = serviceProperties
                 .Select(p => p.Key);
+
+            // Get services instances from other plugins
+            foreach (var serviceType in serviceTypes)
+            {
+                // Don't process if service is from the plugin or RocketModModules
+                if (serviceType.Assembly == _pluginAssembly || serviceType.Assembly == Assembly.GetExecutingAssembly())
+                    continue;
+
+                object service = typeof(IServiceAdapter)
+                    .GetMethod("GetService")
+                    .MakeGenericMethod(new[] { serviceType })
+                    .Invoke(_serviceAdapter, null);
+
+                _services.Add(service.GetType(), service);
+            }
 
             // Add services in dependency order
             AddParameters(orderedConstructors, serviceTypes);
@@ -118,22 +144,11 @@ namespace Hydriuk.RocketModModules
                 if (_services.ContainsKey(type))
                     continue;
 
-                // Try to find an implementing type from the plugin's assembly
-                Type implementingType = _pluginAssembly
-                    .GetTypes()
-                    .Where(t => t.IsClass)
-                    .Where(type.IsAssignableFrom)
-                    .FirstOrDefault();
-
-                // Try to find an implementing type from the RocketModModules' assembly
-                if (implementingType == null)
-                {
-                    implementingType = Assembly.GetExecutingAssembly()
+                Type implementingType = type.Assembly
                         .GetTypes()
                         .Where(t => t.IsClass)
                         .Where(type.IsAssignableFrom)
                         .FirstOrDefault();
-                }
 
                 if (implementingType == null)
                     throw new Exception($"Could not find implementing type for {type.Name}");
