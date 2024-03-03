@@ -2,7 +2,6 @@
 using Rocket.API;
 using Rocket.Core;
 using Rocket.Core.Logging;
-using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +36,21 @@ namespace Hydriuk.RocketModModules.Adapters
         {
             IRocketPlugin plugin = await GetPluginAsync(pluginAssembly);
 
-            return GetService<TService>(plugin);
+            // The plugin is rocketmod loaded.
+            // Waiting for rockmodmodules to instanciate the plugin's properties
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    return GetService<TService>(plugin);
+                }
+                catch
+                {
+                    await Task.Delay(50);
+                }
+            }
+
+            throw new Exception($"Plugin {plugin} was not initialized in time");
         }
 
         public TService GetService<TService>() 
@@ -45,6 +58,12 @@ namespace Hydriuk.RocketModModules.Adapters
         {
             Assembly pluginAssembly = Assembly.GetCallingAssembly();
 
+            return GetService<TService>(pluginAssembly);
+        }
+
+        private TService GetService<TService>(Assembly pluginAssembly)
+            where TService : notnull
+        {
             IRocketPlugin plugin = R.Plugins.GetPlugin(pluginAssembly) ??
                 throw new Exception($"Plugin {pluginAssembly.FullName} not found");
 
@@ -62,7 +81,7 @@ namespace Hydriuk.RocketModModules.Adapters
                 .FirstOrDefault(property => property.PropertyType == implementingType[typeof(TService)]);
 
             return (TService)serviceInfo?.GetValue(plugin) ??
-                throw new Exception("Service could not be found");
+                throw new Exception($"Service {typeof(TService)} could not be found");
         }
 
         private Dictionary<Type, Type> GetImplementingTypes(IRocketPlugin plugin)
