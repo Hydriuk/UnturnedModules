@@ -11,9 +11,9 @@ namespace Hydriuk.UnturnedModules.Extensions
             return inventory.getItem(page, index);
         }
 
-        public static Item GetItem(this PlayerInventory inventory, byte page, byte x, byte y)
+        public static Item? GetItem(this PlayerInventory inventory, byte page, byte x, byte y)
         {
-            return inventory.GetItemJar(page, x, y).item;
+            return inventory.GetItemJar(page, x, y)?.item;
         }
 
         public static void DeleteItem(this PlayerInventory inventory, byte page, byte x, byte y)
